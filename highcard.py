@@ -1,6 +1,14 @@
+# win7233
+# highcard Draw
+# with very inconsistent documentation sorry:/
+
 import random
 
 class card:
+	"""
+	card object.
+	has a name, suit, value and fullname variable
+	"""
 	def __init__(self,name,suit,value):
 		"""
 		creates self.name (eg: ace),
@@ -24,8 +32,18 @@ class card:
 		return f'name : {self.name},\nsuit : {self.suit}\nvalue : {self.value}'
 
 class deck:
+	"""
+	deck object (technically a wrapped list)
+	## standards:
+	we consider deck[0] the "top" card and deck[-1] the bottom
+	"""
 	def __init__(self):
-		"""initialization of deck object, initializes self.deck list, generates all the contents of a deck (no jokers, aces are worth 1), shuffles the deck"""
+		"""
+		initialization of deck object, 
+		initializes self.deck list, 
+		generates a deck of cards (no jokers, aces are worth 1) in said list, 
+		then shuffles the deck
+		"""
 		self.deck = []
 		# generate card objects loop
 		suitList = ["spade","heart","club","diamond"]
@@ -38,7 +56,7 @@ class deck:
 				cardObj = card(cardName, currentSuit, cardVal)
 				self.deck.append(cardObj)
 			# faceCards generation (and also aces)
-			# NOTE: this is a dictionary so do not rely on it iterating in any particular order)
+			# NOTE: this is a dictionary so do not rely on it iterating in any particular order
 			for cardName,cardVal in faceCardNameDict.items():
 				cardObj = card(cardName, currentSuit, cardVal)
 				self.deck.append(cardObj)
@@ -53,7 +71,7 @@ class deck:
 
 	def draw(self):
 		"""
-		returns a random card from the deck then
+		returns the top card from the deck then removes it from the deck
 		"""
 		card = self.deck[0]
 		self.deck.remove(card)
@@ -75,24 +93,32 @@ class deck:
 		"""
 		returns a simple to read list of the contents of the deck
 		"""
-		# NOTE: why does this work like this I kind of hate it (recursive annoyance)
+		# NOTE: why does this work like this I kind of hate it (recursive annoyance) (like it works but ugh)
 		strTempString = ""
 		for i in self.deck:
 		 	strTempString = f'{strTempString}{print(i)}\n'  # literally just call print on each card object and append it to the string
 		return strTempString
 
 	def __repr__(self):
-		"""returns all cards in deck, length of deck and the value of each card"""
-		reprTempString = f"# Length of deck: {len(self.deck)}\n"
+		"""
+		returns all cards in deck, length of deck and the value of each card
+		"""
 		for i in self.deck:
 			reprTempString = f'{reprTempString}- {repr(i)}\n' # just call repr each card object. that provides enough data
+		reprTempString = f"Length of deck: {len(self.deck)}\n" # end the deck print with the length of the deck
 		return reprTempString
 class Player():
+	"""
+	Player object
+	stores all needed player data (name, score, current card)
+	can draw cards.
+	"""
 	def __init__(self, name):
 		self.name = name
 		self.score = 0
 		self.currentCard = None
 	def drawCard(self, deck):
+		"""draw a card from the deck and print it"""
 		self.currentCard = deck.draw()
 		print(f"{self.name} Draws: {self.currentCard}")
 player = Player("player")
@@ -100,19 +126,20 @@ computer = Player("player")
 deckObj = deck()
 i = 0
 while True:
-	i += 1
+	i += 1 #increase round number. 
 	## draw cards from the deck for the player and the computer
 	player.drawCard(deckObj) ; computer.drawCard(deckObj)
 	## check who won the current round
-	if player.currentCard > computer.currentCard:
-		player.score += 1; print(f"round {i+1} result: player Wins!")
-	elif player.currentCard < computer.currentCard:
-		computer.score -= 1; print(f"round {i+1} result: computer Wins!")
+	if player.currentCard > computer.currentCard: # if player wins
+		player.score += 1; print(f"round {i} result: player Wins!")
+	elif player.currentCard < computer.currentCard: # if computer wins
+		computer.score -= 1; print(f"round {i} result: computer Wins!")
 	else:
 		print("tie")
 	if input("next? (y/n) > ") not in ["y","yes","next", ""] or player.score == 5 or computer.score == 5:
 		break
-if player.score == 5:
+## check who won and print that they won
+if player.score == 5: # if player wins
 	print("game result: player wins!")
-elif computer.score == 5:
+elif computer.score == 5: # if computer wins
 	print("game Result: computer wins!")
