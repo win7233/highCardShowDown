@@ -2,14 +2,22 @@ import random
 
 class card:
 	def __init__(self,name,suit,value):
+		"""
+		creates self.name (eg: ace),
+		self.suit (eg: spade),
+		self.value (eg: 1),
+		and self.fullname (eg: ace of spades")
+		"""
 		self.name = name
 		self.suit = suit
 		self.value = value
 		self.fullname = f'{name} of {suit}s'
+	## math operations
 	def __eq__(self, other):
 		return self.value == other.value
 	def __lt__(self,other):
 		return self.value < other.value
+	## printing operations
 	def __str__(self):
 		return self.fullname
 	def __repr__(self):
@@ -79,21 +87,32 @@ class deck:
 		for i in self.deck:
 			reprTempString = f'{reprTempString}- {repr(i)}\n' # just call repr each card object. that provides enough data
 		return reprTempString
-score = 0
+class Player():
+	def __init__(self, name):
+		self.name = name
+		self.score = 0
+		self.currentCard = None
+	def drawCard(self, deck):
+		self.currentCard = deck.draw()
+		print(f"{self.name} Draws: {self.currentCard}")
+player = Player("player")
+computer = Player("player")
 deckObj = deck()
-for i in range(5):
-	playerDraw = deckObj.draw()
-	comDraw = deckObj.draw()
-	if playerDraw > comDraw:
-		score += 1; print("player wins!")
-	elif playerDraw < comDraw:
-		score -= 1; print("computer wins!")
+i = 0
+while True:
+	i += 1
+	## draw cards from the deck for the player and the computer
+	player.drawCard(deckObj) ; computer.drawCard(deckObj)
+	## check who won the current round
+	if player.currentCard > computer.currentCard:
+		player.score += 1; print(f"round {i+1} result: player Wins!")
+	elif player.currentCard < computer.currentCard:
+		computer.score -= 1; print(f"round {i+1} result: computer Wins!")
 	else:
 		print("tie")
-if score > 0:
-	print("came result: player wins!")
-elif score < 0:
+	if input("next? (y/n) > ") not in ["y","yes","next", ""] or player.score == 5 or computer.score == 5:
+		break
+if player.score == 5:
+	print("game result: player wins!")
+elif computer.score == 5:
 	print("game Result: computer wins!")
-else:
-	print("game reasult: tie")
-
